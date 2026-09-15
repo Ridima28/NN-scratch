@@ -34,11 +34,25 @@ class Activation_ReLu:
     def forward(self, inputs):
         self.output = np.maximum(0, inputs)
 
+class Activation_Softmax:
+    def forward(self, inputs):
+        exp_vals = np.exp(inputs - np.max(inputs, axis = 1, keepdims = True)) # to prevent overflow
+        self.probabilities = exp_vals/np.sum(exp_vals, axis = 1, keepdims = True)
+        self.output = self.probabilities
 
-layer1 = Layer_Dense(4,5)
+
+
+layer1 = Layer_Dense(2,3)
 activation1 = Activation_ReLu()
+
+layer2 = Layer_Dense(3,3)
+activation2 = Activation_Softmax()
 
 layer1.forward(X)
 activation1.forward(layer1.output)
-# print(layer1.output)
-print(activation1.output)
+
+
+layer2.forward(activation1.output)
+activation2.forward(layer2.output)
+print(activation2.output)
+
